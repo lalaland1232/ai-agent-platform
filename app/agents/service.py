@@ -13,6 +13,7 @@ class AgentService:
             self.db.commit()
             return {"message": "Agent created successfully", "prompt": prompt}
         except Exception as e:
+            self.db.rollback()
             raise HTTPException(status_code=500, detail=f"Error occurred while creating agent: {e}")
 
     def use_agent(self,req:str,agent_id:int,user):
