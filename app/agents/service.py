@@ -6,11 +6,23 @@ class AgentService:
         self.repo = repo
         self.db = db
 
-    def create_agent(self,request):
+    def create_agent(self,request,user_id):
         prompt = self.agent.get_prompt(request.dict())
         try:
-            self.repo.create_agent(request,prompt)
+            self.repo.create_agent(request,prompt,user_id)
             self.db.commit()
             return {"message": "Agent created successfully", "prompt": prompt}
         except Exception as e:
             return {"message": f"Error occurred while creating agent: {e}"}
+
+    def use_agent(self,req:str,agent_id:int,user):
+        agent=self.repo.get_agent(agent_id)
+        if agent is None:
+            return {"message": "Agent not found"}
+        if agent.user_id != user.user_id:
+            return {"message": "Unauthorized access to this agent"}
+        prompt = self.repo.get_prompt(agent_id)
+        return self.agent.generate_response(req, prompt)
+
+    def get_agents_bY_user(self,user_id:int):
+        return self.repo.get_agents_by_user(user_id)

@@ -16,3 +16,7 @@ class CreateAgent(BaseModel):
     agent_details:str
     input_format:dict
     output_format:dict
+
+class Use_Agent(BaseModel):
+    req:dict
+   
