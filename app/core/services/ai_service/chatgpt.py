@@ -23,10 +23,11 @@ class ChatGpt(AI):
                 "model":"openrouter/free",
                 "messages":[{"role":"user","content":prompt}]
             })
+            if response.status_code==200:
+                        return response.json()["choices"][0]["message"]["content"]
         except Exception as e:
             print(f"Error occurred while fetching prompt: {e}")
-        if response.status_code==200:
-            return response.json()["choices"][0]["message"]["content"]
+        
       
 
     def generate_response(self,prompt:str,input_data:dict)-> str:

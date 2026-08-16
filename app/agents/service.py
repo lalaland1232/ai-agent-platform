@@ -1,5 +1,5 @@
 from app.core.services.ai_service.chatgpt import ChatGpt
-from fastapi import HttpException
+from fastapi import HTTPException
 class AgentService:
     def __init__(self, agent: ChatGpt,repo,db):
         self.agent = agent
@@ -13,14 +13,14 @@ class AgentService:
             self.db.commit()
             return {"message": "Agent created successfully", "prompt": prompt}
         except Exception as e:
-            raise HttpException(status_code=500, detail=f"Error occurred while creating agent: {e}")
+            raise HTTPException(status_code=500, detail=f"Error occurred while creating agent: {e}")
 
     def use_agent(self,req:str,agent_id:int,user):
         agent=self.repo.get_agent(agent_id)
         if agent is None:
-            raise HttpException(status_code=404, detail="Agent not found")
+            raise HTTPException(status_code=404, detail="Agent not found")
         if agent.user_id != user.user_id:
-            raise HttpException(status_code=403, detail="You are not authorized to use this agent")
+            raise HTTPException(status_code=403, detail="You are not authorized to use this agent")
         prompt = self.repo.get_prompt(agent_id)
         return self.agent.generate_response(req, prompt)
 
